@@ -1,6 +1,7 @@
 from sqlalchemy.orm import Session
 from models import Votacao
 from OperacoesAdmin import OperacoesAdmin
+from datetime import datetime
 
 class MenuSuperUsuario:
     """Interface de contato com o superusuário (Admin)."""

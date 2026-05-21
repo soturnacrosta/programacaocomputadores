@@ -65,7 +65,15 @@ class LogicaMotor:
         contagem = df_votos['opcoes_idOpcoes'].value_counts()
         
         # Verifica se há empate na primeira colocação
+        # Verifica se há empate na primeira colocação 
         if len(contagem) > 1 and contagem.iloc[0] == contagem.iloc[1]:
             return "Empate. Será necessário maior discussão do grupo."
         else:
-            return f"Concordância estabelecida. A opção {contagem.index[0]} superou as demais."
+            # Pega o ID numérico da opção vencedora
+            id_vencedor = int(contagem.index[0])
+            
+            # Busca no banco o objeto Opcao correspondente para extrair o texto
+            opcao_vencedora = self.session.query(Opcao).filter(Opcao.idOpcoes == id_vencedor).first()
+            texto_vencedor = opcao_vencedora.textoOpcao if opcao_vencedora else f"ID {id_vencedor}"
+            
+            return f"Concordância estabelecida. A opção '{texto_vencedor}' superou as demais."

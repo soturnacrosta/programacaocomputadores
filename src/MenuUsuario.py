@@ -32,6 +32,19 @@ class MenuUsuario:
         Fluxo de exibição de opções e registro de voto.
         Garante que o usuário só vote em uma alternativa[cite: 18].
         """
+        # Seta prazos automaticamente
+        agora = datetime.now()
+        votacoes_para_checar = self.session.query(Votacao).filter(Votacao.status == "ATIVA").all()
+        
+        for v in votacoes_para_checar:
+            if agora > v.prazo_final:
+                v.status = "ENCERRADA" # Atualiza automaticamente se o prazo venceu 
+        self.session.commit()
+
+        # Busca as votações ativas ordenadas da mais atual para a mais antiga (pelo prazo) 
+        votacoes_ativas = self.session.query(Votacao).filter(
+            Votacao.status == "ATIVA"
+        ).order_by(Votacao.prazo_final.desc()).all()
         # Busca as votações ativas ordenadas da mais atual para a mais antiga (pelo prazo) 
         votacoes_ativas = self.session.query(Votacao).filter(
             Votacao.status == "ATIVA"
